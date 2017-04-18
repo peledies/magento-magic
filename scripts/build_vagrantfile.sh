@@ -50,6 +50,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, host: ${http_port}, guest: 80
   config.vm.network :forwarded_port, host: ${mysql_port}, guest: 3306
 
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", 2048]
+  end
+
   config.vm.provision "shell" do |s|
     s.path = "./scripts/magento_generic_bootstrap.sh"
     s.args   = "${project}"
