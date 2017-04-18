@@ -1,1 +1,5 @@
 .vagrant
+magento_auth.json
+magento_setup.log
+ubuntu-xenial-16.04-cloudimg-console.log
+vm_build.log
