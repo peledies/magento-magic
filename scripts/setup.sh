@@ -13,13 +13,12 @@ if [ -z "$1" ];then
   exit 1
 fi
 
+source $SCRIPTPATH/build_vagrantfile.sh
+
+cp magento_auth.json ~/.composer/auth.json
 
 # Clone the current laravel repo
 echo_start
 echo -n "${gold}Creating Magento project with Composer${default}"
-  #composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition $1
+  composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition $1
 test_for_success $?
-
-cd $1
-
-source $SCRIPTPATH/build_vagrantfile.sh
