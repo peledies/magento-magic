@@ -54,12 +54,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--memory", 2048]
   end
 
+  config.vm.synced_folder "./${project}", "/var/www/html", owner: "www-data", group: "www-data", mount_options: ["dmode=777", "fmode=777"]
+
   config.vm.provision "shell" do |s|
     s.path = "./scripts/magento_generic_bootstrap.sh"
     s.args   = "${project}"
   end
-
-  config.vm.synced_folder "./${project}", "/var/www/html", owner: "www-data", group: "www-data", mount_options: ["dmode=777", "fmode=777"]
 
 end
 EOF
