@@ -2,6 +2,8 @@ read -p "${cyan}What local port should Vagrant Map to its port ${red}80${cyan}: 
 http_port=${port:-8000}
 read -p "${cyan}What local port should Vagrant Map to its port ${red}3306${cyan}: [default 3307]${gold} " port
 mysql_port=${port:-3307}
+read -p "${cyan}Magento Public Key:${gold} " magento_public_key
+read -p "${cyan}Magento Private Key:${gold} " magento_private_key
 
 configure_generic() {
   echo "${green} Which image do you want to use"
@@ -58,7 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "shell" do |s|
     s.path = "./scripts/magento_generic_bootstrap.sh"
-    s.args   = "${project}"
+    s.args   = ["$project", "$magento_public_key", "$magento_private_key"]
   end
 
 end
@@ -67,8 +69,6 @@ test_for_success $?
 }
 
 create_credentials_file() {
-read -p "${cyan}Magento Public Key:${gold} " magento_public_key
-read -p "${cyan}Magento Private Key:${gold} " magento_private_key
 
 cat <<EOF > $INITDIR/magento_auth.json
 {
