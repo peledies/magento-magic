@@ -23,4 +23,4 @@ echo -n "${gold}Creating Project Directory${default}"
   mkdir -p $INITDIR/$1
 test_for_success $?
 
-#vagrant up
+vagrant up
