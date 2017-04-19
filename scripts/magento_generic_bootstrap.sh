@@ -5,6 +5,8 @@ DBHOST=localhost
 DBNAME=$1
 DBUSER=$1
 DBPASSWD=SECRET
+public_key=$2
+private_key=$3
 
 echo -e "\n--- Updating packages list ---\n"
 apt-get -qq update
@@ -24,7 +26,7 @@ apt-get -y install mysql-server >> /vagrant/vm_build.log 2>&1
 
 echo -e "\n--- Setting up our MySQL user and db ---\n"
 mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
-mysql -uroot -p$DBPASSWD -e "grant all privileges on *.* to '$DBUSER'@'%' identified by '$DBPASSWD'" > /vagrant/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "grant all privileges on *.* to '$DBUSER'@'%' identified by '$DBPASSWD'" >> /vagrant/vm_build.log 2>&1
 sed -i '/skip-external-locking/s/^/#/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sed -i '/bind-address/s/^/#/' /etc/mysql/mysql.conf.d/mysqld.cnf
 
@@ -36,9 +38,6 @@ a2enmod rewrite >> /vagrant/vm_build.log 2>&1
 echo -e "\n--- Allowing Apache override to all ---\n"
 sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
 
-echo -e "\n--- Setting document root to public directory ---\n"
-#rm -rf /var/www/html
-#ln -fs /vagrant/$DBUSER /var/www/html
 
 echo -e "\n--- We definitly need to see the PHP errors, turning them on ---\n"
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/7.0/apache2/php.ini
@@ -46,6 +45,15 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php/7.0/apache2/php.ini
 
 echo -e "\n--- Restarting Apache ---\n"
 service apache2 restart >> /vagrant/vm_build.log 2>&1
+
+echo -e "\n--- Removing Ubuntu's default landing page ---\n"
+rm /var/www/html/index.html
+
+echo -e "\n--- Updating Composer Auth File ---\n"
+composer global config http-basic.repo.magento.com $2 $3
+
+echo -e "\n--- Creating Magento project with Composer [ Be Patient ] you can tail magento_setup.log for status ---\n"
+composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition /var/www/html/ >> /vagrant/magento_setup.log 2>&1
 
 echo -e "\n--- Executing Magento Setup ---\n"
 cd /var/www/html/bin

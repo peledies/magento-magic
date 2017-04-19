@@ -19,6 +19,8 @@ cp magento_auth.json ~/.composer/auth.json
 
 # Clone the current laravel repo
 echo_start
-echo -n "${gold}Creating Magento project with Composer${default}"
-  composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition $1
+echo -n "${gold}Creating Project Directory${default}"
+  mkdir -p $INITDIR/$1
 test_for_success $?
+
+vagrant up
