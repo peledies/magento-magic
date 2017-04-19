@@ -53,7 +53,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, host: ${mysql_port}, guest: 3306
 
   config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--memory", 2048]
+    vb.memory = 2048
+    vb.cpus = 2
   end
 
   config.vm.synced_folder "./${project}", "/var/www/html", owner: "www-data", group: "www-data", mount_options: ["dmode=777", "fmode=777"]
