@@ -23,4 +23,8 @@ echo -n "${gold}Creating Project Directory${default}"
   mkdir -p $INITDIR/$1
 test_for_success $?
 
+
+echo "${cyan}Removing magento-magic origin.${default}"
+git remote remove origin
+
 vagrant up
